@@ -1,11 +1,12 @@
 const userController = require("../controllers/userController");
 const router = require("express").Router();
 
+const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
 const upload = require("../middlewares/multer");
 
 router
-  .get("/", userController.getAllUsers)
+  .get("/", authentication, userController.getAllUsers)
   .get("/history", authorization, userController.getUserPagination)
   .get("/:id", authorization, userController.getUserById)
   .post("/", authorization, userController.postUser)

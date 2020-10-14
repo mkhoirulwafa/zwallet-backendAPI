@@ -6,6 +6,7 @@ const cors = require('cors')
 require('dotenv').config()
 
 //middleware
+app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false}))
 app.use(bodyParser.json())
 app.use(cors())
@@ -20,15 +21,11 @@ const userRoute = require('./src/routes/userRoutes')
 const authRoute = require('./src/routes/authRoutes')
 const topupRoutes = require('./src/routes/topupRoutes')
 const transferRoutes = require('./src/routes/transferRoutes')
-const uploadRoutes = require('./src/routes/uploadRoutes')
-
 
 app.use(`${URI}/users`, userRoute)
 app.use(`${URI}`, authRoute)
 app.use(`${URI}/topup`, topupRoutes)
 app.use(`${URI}/transfer`, transferRoutes)
-app.use(`${URI}/upload`, uploadRoutes)
-
 
 
 
