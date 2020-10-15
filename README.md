@@ -1,10 +1,21 @@
 # Zwallet Backend API
-Project ini berisi Restful API yang saya buat menggunakan **express js** dan dengan database **mysql**, project ini adalah lanjutan dari project sebelumnya yaitu zwallet app, yang merupakan ui nya, dan di sini adalah backend nya.
+  Project ini berisi Restful API yang saya buat menggunakan **express js** dan dengan database **mysql**, project ini adalah lanjutan dari project sebelumnya yaitu zwallet app, yang merupakan ui nya, dan di sini adalah backend nya.
 
 ## Apa itu Otentikasi? lalu Otorisasi?
   Otentikasi adalah proses memverifikasi sebuah identitas apakah dia sesuai dengan yang ditentukan atau tidak, lalu, Otorisasi adalah sebuah hak akses yang mengatur siapa saja yang boleh mengakses sesuatu dalam konteks ini adalah halaman. dan disini, ada 2 buah Role untuk Otorisasi, 1. Admin yang mampu melakukan segalanya (CRUD) dan juga 2. User Yang hanya mampu Read dan CU untuk data nya sendiri
 
 ## Tools
+
+* **JWT**
+  JWT (JSON Web Token) merupakan sebuah token berbentuk JSON, yang dapat dikirim melalui URL, lebih tepatnya bagian header, jwt berfungsi untuk melakukan verifikasi menggunakan token yang di generate sendiri oleh jwt pada saat login.
+  Struktur token jwt adalah diawali dengan header, payload, dan signature.
+
+* **CORS**
+  Cross-Origin Resource Sharing (CORS) adalah mekanisme yang menggunakan header HTTP tambahan untuk memberi tahu browser agar memberikan akses ke resource (API) yang diambil dari sumber yang berbeda.
+
+* **Multer**
+  Multer adalah sebuah middleware node.js untuk menangani multipart/form data yang mana tidak dapat ditangani oleh body parser, yang biasanya digunakan untuk mengunggah file.
+
 * **Node JS**
 
   Node.js adalah perangkat lunak yang didesain untuk mengembangkan aplikasi berbasis web dan ditulis dalam sintaks bahasa pemrograman JavaScript. Bila selama ini kita mengenal JavaScript sebagai bahasa pemrograman yang berjalan di sisi client / browser saja, maka Node.js ada untuk melengkapi peran JavaScript sehingga bisa juga berlaku sebagai bahasa pemrograman yang berjalan di sisi server, seperti halnya PHP, Ruby, Perl, dan sebagainya.
