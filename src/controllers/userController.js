@@ -32,6 +32,12 @@ module.exports = {
       .then((data) => formResponse(data, res, 201, `Success update users data with id ${req.params.id}`))
       .catch((err) => formResponse('', res, 401, "Failed to update data User"));
   },
+  uploadAvatar: (req, res) => {
+    userModel
+      .uploadAvatar(req.params, req.body)
+      .then((data) => formResponse(data, res, 201, `Success update users data with id ${req.params.id}`))
+      .catch((err) => formResponse('', res, 401, "Failed to update data User"));
+  },
   deleteUser: (req, res) => {
     userModel
       .deleteUser(req.params)

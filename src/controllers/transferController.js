@@ -17,7 +17,7 @@ module.exports = {
   getSearch: (req, res) => {
     transferModel
       .getSearch(req.params)
-      .then((data) => formResponse(data, res, 200, `Success get user(s) Result from keyword ${req.params.key}`))
+      .then((data) => formResponse(data, res, 200, `Success get user(s) Result`))
       .catch((err) => formResponse('', res, 500, "Internal Server Error, Failed to get result"));
   },
   postTransfer: (req, res) => {

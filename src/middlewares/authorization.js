@@ -11,11 +11,12 @@ module.exports = {
         message: 'NOT FOUND'
       });
     else{
+      // const token = bearerToken.split(' ')[1];
       const token = bearerToken.split(' ')[1];
       jwt.verify(token, secretKey, (err, decoded)=>{
         if(!err){
-          if(decoded.role === 18) next();
-          else if(decoded.id === req.params.id) next();
+          if(decoded.role === 18) {console.log('admin lolos'); next();}
+          else if(decoded.id === req.params.id) {console.log('id sama lolos'); next();}
           else{
             res.status(403).send({
               success: false,
@@ -30,10 +31,5 @@ module.exports = {
         }
       })
     }
-
-    // const { role } = req.decoded;
-    // if (role === 18) next();
-    // else if(id === req.params.id);
-    // else res.send({ status: 403, message: "Unauthorized" });
   },
 };

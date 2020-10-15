@@ -1,5 +1,6 @@
 const db = require("../helpers/db");
 const bcrypt = require("bcrypt");
+const upload = require("../middlewares/multer");
 require("dotenv").config();
 
 const userModels = {
@@ -75,12 +76,7 @@ const userModels = {
   },
   updateUser: (params, body) => {
     const { id, email } = params;
-    let newBody = {...body}
     return new Promise((resolve, reject) => {
-      if (req.file) {
-        let avatar = `${process.env.BASE_URI}/images/${req.file.filename}`;
-        const newBody = { ...body, avatar: avatar };
-      }
       if (body.password) {
         bcrypt.genSalt(10, function (err, salt) {
           //start hash password
@@ -90,17 +86,41 @@ const userModels = {
             if (err) {
               reject(err);
             }
+            let query = `UPDATE users SET ? WHERE id=? OR email=?`;
+            db.query(query, [newBody, id, email], (err, res) => {
+              if (!err) {
+                resolve(newBody);
+              } else {
+                reject(err);
+              }
+            });
           });
         });
-      }
-      let query = `UPDATE users SET ? WHERE id=? OR email=?`;
-        db.query(query, [newBody, id, email], (err, res) => {
+      } else {
+        let query = `UPDATE users SET ? WHERE id=? OR email=?`;
+        db.query(query, [body, id, email], (err, res) => {
           if (!err) {
-            resolve(newBody);
+            resolve(body);
           } else {
             reject(err);
           }
         });
+      }
+    });
+  },
+  uploadAvatar: (params, body) => {
+    const { id } = params;
+    return new Promise((resolve, reject) => {
+      console.log(req)
+      body = `${process.env.BASE_URI}/images/${req.file.filename}`
+      let query = `UPDATE users SET (avatar) VALUES ${body} WHERE id=?`;
+      db.query(query, [id], (err, res) => {
+        if (!err) {
+          resolve("Success");
+        } else {
+          reject("Gagallllll");
+        }
+      });
     });
   },
   deleteUser: (params) => {

@@ -42,7 +42,7 @@ const authModels = {
           const hashed = bcrypt.compareSync(password, newData.password);
           if (hashed) {
             const token = jwt.sign(newBody, process.env.SECRET_KEY);
-            resolve(`token : Bearer ${token}`);
+            resolve(`token : ${token}`);
           } else reject("Email or Password wrong");
 
         } else {
