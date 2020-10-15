@@ -1,9 +1,8 @@
 # Zwallet Backend API
 Project ini berisi Restful API yang saya buat menggunakan **express js** dan dengan database **mysql**, project ini adalah lanjutan dari project sebelumnya yaitu zwallet app, yang merupakan ui nya, dan di sini adalah backend nya.
 
-## What is API?
-
-Menurut saya Application Programming Interface atau (API) adalah sebuah perangkat lunak yang mampu menghubungkan dua aplikasi untuk saling terhubung.
+## Apa itu Otentikasi? lalu Otorisasi?
+  Otentikasi adalah proses memverifikasi sebuah identitas apakah dia sesuai dengan yang ditentukan atau tidak, lalu, Otorisasi adalah sebuah hak akses yang mengatur siapa saja yang boleh mengakses sesuatu dalam konteks ini adalah halaman. dan disini, ada 2 buah Role untuk Otorisasi, 1. Admin yang mampu melakukan segalanya (CRUD) dan juga 2. User Yang hanya mampu Read dan CU untuk data nya sendiri
 
 ## Tools
 * **Node JS**
@@ -18,17 +17,6 @@ Menurut saya Application Programming Interface atau (API) adalah sebuah perangka
 * **Nodemon**
 
   Nodemon adalah utilitas yang akan memantau setiap perubahan di source code kalian dan secara otomatis memulai ulang server kalian. Instal menggunakan npm. Cukup gunakan nodemon alih-alih node untuk menjalankan kode Anda, dan sekarang server kalian akan otomatis dimulai ulang saat kode Anda berubah.
-  
-## What can we do?
-* Get All data from table
-* Get All data from table with Pagination
-* Get data by id
-* Get data by name
-* Post Data into table
-* Update data
-* Delete data
-* Sorting data
-* Search data
 
 ## How to Start
  > ```git clone https://github.com/mkhoirulwafa/zwallet-backend```
