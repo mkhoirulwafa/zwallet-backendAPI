@@ -14,9 +14,15 @@ module.exports = {
       .then((data) => formResponse(data, res, 200, `Success get Data Transfer with id ${req.params.id}`))
       .catch((err) => formResponse('', res, 500, "Internal Server Error, Failed to get data"));
   },
+  getAllSearch: (req, res) => {
+    transferModel
+      .getAllSearch(req.params, req.query)
+      .then((data) => formResponse(data, res, 200, `Success get users Result`))
+      .catch((err) => formResponse('', res, 500, "Internal Server Error, Failed to get result"));
+  },
   getSearch: (req, res) => {
     transferModel
-      .getSearch(req.params)
+      .getSearch(req.params, req.query)
       .then((data) => formResponse(data, res, 200, `Success get user(s) Result`))
       .catch((err) => formResponse('', res, 500, "Internal Server Error, Failed to get result"));
   },

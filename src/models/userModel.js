@@ -1,140 +1,89 @@
 const db = require("../helpers/db");
 const bcrypt = require("bcrypt");
-const upload = require("../middlewares/multer");
+// const upload = require("../middlewares/multer");
+const query = require("../helpers/query");
 require("dotenv").config();
 
 const userModels = {
-  getAllUsers: () => {
-    return new Promise((resolve, reject) => {
-      let query = `SELECT * FROM users`;
-      db.query(query, (err, res) => {
-        if (!err) {
-          resolve(res);
-        } else {
-          console.log(err);
-        }
-      });
-    });
+  getAllUsers: (queries) => {
+    let { page, limit } = queries;
+    !limit ? (limit = 8) : parseInt(limit);
+    !page ? (page = 1) : parseInt(page);
+    return query(
+      `SELECT * FROM users ORDER BY CONCAT(firstName, ' ' ,lastName) LIMIT ? OFFSET ?`,
+      [limit, (page - 1) * limit]
+    );
   },
   getUserById: (params) => {
     const { id } = params;
-    return new Promise((resolve, reject) => {
-      let query = `SELECT * FROM users WHERE id=?`;
-      db.query(query, id, (err, res) => {
-        if (!err) {
-          resolve(res);
-        } else {
-          reject(err);
-        }
-      });
-    });
+    return query(`SELECT * FROM users WHERE id=?`, [id]);
   },
-  getUserPagination: (queries) => {
+  checkUser: (id,email = null) => {
+    return query(`SELECT * FROM users WHERE id=? OR email=?`, [id, email]);
+  },
+  getUserByEmail: (email) => {
+    // const { email } = token;
+    return query(`SELECT * FROM users WHERE email=?`, [email]);
+  },
+  getAllSearchUser: (id, queries) => {
     let { page, limit } = queries;
-    return new Promise((resolve, reject) => {
-      console.log(queries.limit);
-      !limit ? (limit = 2) : parseInt(limit);
-      !page ? (page = 1) : parseInt(page);
-      let query = `SELECT * FROM users LIMIT ${limit} OFFSET ${
-        (page - 1) * limit
-      }`;
-      db.query(query, (err, res) => {
-        if (!err) {
-          resolve(res);
-        } else {
-          console.log(err);
-        }
-      });
-    });
+    !limit ? (limit = 5) : parseInt(limit);
+    !page ? (page = 1) : parseInt(page);
+    return query(
+      `SELECT *, CONCAT(firstName, ' ', lastName) AS fullName FROM users WHERE NOT id=? ORDER BY CONCAT(firstName, ' ' ,lastName) LIMIT ? OFFSET ?`,
+      [id, limit, (page - 1) * limit]
+    );
   },
+  getSearchUser: (id, queries) => {
+    let { name, phone, page, limit } = queries;
+    !limit ? (limit = 5) : parseInt(limit);
+    !page ? (page = 1) : parseInt(page);
+    return query(
+      `SELECT *, CONCAT(firstName, ' ', lastName) AS fullName FROM users 
+        WHERE CONCAT(firstName, ' ', lastName) LIKE '${name}%' AND NOT id=? OR phone LIKE '${phone}%' AND NOT id=? ORDER BY fullName LIMIT ? OFFSET ?`,
+      [id, id, limit, (page - 1) * limit]
+    );
+  },
+  // getUserPagination: (queries) => {
+  //   let { page, limit } = queries;
+  //   return new Promise((resolve, reject) => {
+  //     // console.log(queries.limit);
+  //     !limit ? (limit = 2) : parseInt(limit);
+  //     !page ? (page = 1) : parseInt(page);
+  //     let query = `SELECT * FROM users LIMIT ${limit} OFFSET ${
+  //       (page - 1) * limit
+  //     }`;
+  //     db.query(query, (err, res) => {
+  //       if (!err) {
+  //         resolve(res);
+  //       } else {
+  //         console.log(err);
+  //       }
+  //     });
+  //   });
+  // },
   postUser: (body) => {
-    const { email, password, role } = body;
-    return new Promise((resolve, reject) => {
-      if (email && password) {
-        bcrypt.genSalt(10, function (err, salt) {
-          //start hash password
-          const { password } = body;
-          bcrypt.hash(password, salt, function (err, hashedPassword) {
-            const newBody = { ...body, password: hashedPassword };
-            if (err) {
-              reject(err);
-            }
-            let query = `INSERT INTO users SET ?`;
-            db.query(query, newBody, (err, res) => {
-              if (!err) {
-                resolve(newBody);
-              } else {
-                reject("Failed to Create User");
-              }
-            });
-          });
-        });
-      } else {
-        reject("Form must be filled correctly");
-      }
-    });
+    return query(`INSERT INTO users SET ?`, [body]);
   },
-  updateUser: (params, body) => {
-    const { id, email } = params;
-    return new Promise((resolve, reject) => {
-      if (body.password) {
-        bcrypt.genSalt(10, function (err, salt) {
-          //start hash password
-          const { password } = body;
-          bcrypt.hash(password, salt, function (err, hashedPassword) {
-            const newBody = { ...body, password: hashedPassword };
-            if (err) {
-              reject(err);
-            }
-            let query = `UPDATE users SET ? WHERE id=? OR email=?`;
-            db.query(query, [newBody, id, email], (err, res) => {
-              if (!err) {
-                resolve(newBody);
-              } else {
-                reject(err);
-              }
-            });
-          });
-        });
-      } else {
-        let query = `UPDATE users SET ? WHERE id=? OR email=?`;
-        db.query(query, [body, id, email], (err, res) => {
-          if (!err) {
-            resolve(body);
-          } else {
-            reject(err);
-          }
-        });
-      }
-    });
+  updateUser: (id, email, body) => {
+    return query(`UPDATE users SET ? WHERE id=? OR email=?`, [body, id, email]);
   },
-  uploadAvatar: (params, body) => {
-    const { id } = params;
-    return new Promise((resolve, reject) => {
-      console.log(req)
-      body = `${process.env.BASE_URI}/images/${req.file.filename}`
-      let query = `UPDATE users SET (avatar) VALUES ${body} WHERE id=?`;
-      db.query(query, [id], (err, res) => {
-        if (!err) {
-          resolve("Success");
-        } else {
-          reject("Gagallllll");
-        }
-      });
-    });
-  },
+  // uploadAvatar: (params, body) => {
+  //   const { id, email } = params;
+  //   return new Promise((resolve, reject) => {
+  //     let query = `INSERT INTO users SET ? WHERE id=? OR email=?`;
+  //     db.query(query, [body, id, email], (err, res) => {
+  //       if (!err) {
+  //         resolve(res);
+  //       } else {
+  //         reject(err);
+  //       }
+  //     });
+  //   });
+  // },
   deleteUser: (params) => {
     const { id } = params;
-    return new Promise((resolve, reject) => {
-      let query = `DELETE FROM users WHERE id=?`;
-      db.query(query, id, (err, res) => {
-        if (!err) {
-          resolve(res);
-        } else {
-          reject(err);
-        }
-      });
-    });
+    return query(`DELETE FROM users WHERE id=?`, [id]);
   },
 };
 

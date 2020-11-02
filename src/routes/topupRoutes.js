@@ -4,8 +4,8 @@ const { authorization } = require("../middlewares/authorization");
 
 router
   .get("/", topupController.getAllData)
-  .post("/", authorization, topupController.postTopup)
-  .patch("/:num", authorization, topupController.updateTopup)
-  .delete("/:num", authorization, topupController.deleteTopup)
+  .post("/", topupController.postTopup)
+  .patch("/:num", topupController.updateTopup)
+  .delete("/:num", topupController.deleteTopup)
 
 module.exports = router;

@@ -9,6 +9,7 @@ require('dotenv').config()
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false}))
 app.use(bodyParser.json())
+// var whitelist = ['http://localhost:3000']
 app.use(cors())
 // app.use(multer)
 
@@ -21,9 +22,10 @@ const userRoute = require('./src/routes/userRoutes')
 const authRoute = require('./src/routes/authRoutes')
 const topupRoutes = require('./src/routes/topupRoutes')
 const transferRoutes = require('./src/routes/transferRoutes')
+const {authorization} = require('./src/middlewares/authorization')
 
-app.use(`${URI}/users`, userRoute)
-app.use(`${URI}`, authRoute)
+app.use(`${URI}/auth`, authRoute)
+app.use(`${URI}/users`, authorization, userRoute)
 app.use(`${URI}/topup`, topupRoutes)
 app.use(`${URI}/transfer`, transferRoutes)
 
