@@ -2,13 +2,14 @@ const userController = require("../controllers/userController");
 const router = require("express").Router();
 
 const upload = require("../middlewares/multer");
+const { authorization } = require("../middlewares/authorization");
 
 router
-  .get("/", userController.getAllUsers)
+  .get("/",authorization, userController.getAllUsers)
   .get("/search", userController.getSearchUser)
-  .get("/:id", userController.getUserById)
-  .post("/", userController.postUser)
-  .patch("/", upload, userController.updateUser)
-  .delete("/:id", userController.deleteUser);
+  .get("/:id", authorization, userController.getUserById)
+  .post("/", authorization, userController.postUser)
+  .patch("/", authorization, upload, userController.updateUser)
+  .delete("/:id",authorization, userController.deleteUser);
 
 module.exports = router;

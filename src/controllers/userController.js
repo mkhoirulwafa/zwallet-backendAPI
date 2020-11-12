@@ -27,7 +27,7 @@ module.exports = {
             "",
             res,
             500,
-            "Internal Server Error, Failed to get User with search tanpa query"
+            `Internal Server Error, Failed to get User with search tanpa query ${req.query.limit}`
           )
         );
     } else if (req.query.name || req.query.phone) {
@@ -125,10 +125,10 @@ module.exports = {
         }
       }
       //CHANGE PIN
-      if (currentPin && pin) {
-        const result = await userModel.checkUser(decoded.id);
-        if (currentPin.length != 6) formResponse("", res, 400, `PIN must be fulfilled`);
-        if (currentPin != result[0].pin) formResponse("", res, 400, `Invalid PIN`);
+      if (pin) {
+        // const result = await userModel.checkUser(decoded.id);
+        // if (currentPin.length != 6) formResponse("", res, 400, `PIN must be fulfilled`);
+        // if (currentPin != result[0].pin) formResponse("", res, 400, `Invalid PIN`);
         if (pin.length != 6) formResponse("", res, 400, `New PIN must be fulfilled`);
         
         newBody.pin = pin;

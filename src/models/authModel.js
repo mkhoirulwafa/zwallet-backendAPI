@@ -6,11 +6,14 @@ require("dotenv").config();
 
 const authModels = {
   register: (body) => {
-    return query(`INSERT INTO users SET ?`, [body])
+    return query(`INSERT INTO users SET ?`, [body]);
   },
   login: (body) => {
     const { email, password } = body;
-    return query(`SELECT id, CONCAT(firstName, ' ', lastName) as fullName, email, password, role_id FROM users WHERE email=?`, [email] )
+    return query(
+      `SELECT id, CONCAT(firstName, ' ', lastName) as fullName,balance, email, password, role_id FROM users WHERE email=?`,
+      [email]
+    );
     // return new Promise((resolve, reject) => {
     //   const { email, password } = body;
     //   let query = `SELECT id, email, password, role_id FROM users WHERE email=?`;
