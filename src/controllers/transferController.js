@@ -40,7 +40,7 @@ module.exports = {
             data,
             res,
             200,
-            `Success get Data Transfer with filter dateRange`
+            `Success get Data Transfer with filter dateRange, ${req.query.start_date}`
           )
         )
         .catch((err) =>

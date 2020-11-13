@@ -58,8 +58,9 @@ const transferModel = {
       p2.avatar AS receiver_avatar,
       p2.phone AS receiver_phone FROM transfer
       INNER JOIN users AS p1 ON transfer.sender_id = p1.id
-      INNER JOIN users AS p2 ON transfer.receiver_id = p2.id WHERE transfer.sender_id =? OR transfer.receiver_id=? AND DATE(transfer.dateTime) BETWEEN ${start_date} AND ${end_date} ORDER BY transfer.dateTime DESC LIMIT ${limit} OFFSET ${
+      INNER JOIN users AS p2 ON transfer.receiver_id = p2.id WHERE (transfer.sender_id =? AND (transfer.dateTime BETWEEN '${start_date}' AND '${end_date}')) OR (transfer.receiver_id =? AND (transfer.dateTime BETWEEN '${start_date}' AND '${end_date}')) ORDER BY transfer.dateTime DESC LIMIT ${limit} OFFSET ${
         (page - 1) * limit
+        // let query = `SELECT dateTime from transfer WHERE dateTime BETWEEN '${start_date}' and '${end_date}' ORDER BY dateTime DESC`
       }`;
       db.query(query, [id, id], (err, res) => {
         if (!err) {
