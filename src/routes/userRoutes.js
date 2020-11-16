@@ -9,7 +9,7 @@ router
   .get("/search", userController.getSearchUser)
   .get("/:id", authorization, userController.getUserById)
   .post("/", authorization, userController.postUser)
-  .patch("/", authorization, upload, userController.updateUser)
+  .patch("/", upload, userController.updateUser)
   .delete("/:id",authorization, userController.deleteUser);
 
 module.exports = router;
