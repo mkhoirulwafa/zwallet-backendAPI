@@ -150,15 +150,16 @@ module.exports = {
         201,
         `Transfer Success from id ${sender_id} to id ${receiver_id}`
       );
-      const device_token_receiver = checkReceiver[0].device_token
-      const device_token_sender = checkSender[0].device_token
-      await admin.messaging().sendToDevice(device_token_sender, {
+      const device_token_receiver = checkReceiver[0].device_token;
+      const device_token_sender = checkSender[0].device_token;
+      await admin.messaging().sendToDevice(device_token_receiver, {
         notification: {
-          title: "Transfer Success",
-          body: `Success tansfer to ${checkReceiver[0].firstName} with amount ${amount}`,
-          badge: '1',
+          title: "Transfer Received",
+          body: `You've been transferred Rp${amount} by ${checkSender[0].firstName}`,
+          badge: "1",
         },
-      })
+      });
+      console.log(`success pass notif to receiver`)
       // .then(()=>{
       //   console.log(`success pass notif to receiver`)
       //   admin.messaging().sendToDevice(device_token_receiver, {
