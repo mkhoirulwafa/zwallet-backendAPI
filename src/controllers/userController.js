@@ -138,6 +138,9 @@ module.exports = {
       if (req.body.phone) {
         newBody.phone = req.body.phone;
       }
+      if(req.body.device_token){
+        newBody.device_token = req.body.device_token;
+      }
       // UPDATE DATABASE
       const result = await userModel.updateUser(
         decoded.id,

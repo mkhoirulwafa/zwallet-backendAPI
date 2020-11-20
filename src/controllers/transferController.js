@@ -1,6 +1,7 @@
 const transferModel = require("../models/transferModel");
 const formResponse = require("../helpers/formResponse");
 const { checkUser, updateUser } = require("../models/userModel");
+const admin = require("firebase-admin");
 
 module.exports = {
   getAllData: (req, res) => {
@@ -130,7 +131,6 @@ module.exports = {
       }
       const currentBalanceSender = Number(checkSender[0].balance);
       const currentBalanceReceiver = Number(checkReceiver[0].balance);
-      console.log(currentBalanceSender);
       if (currentBalanceSender < Number(amount))
         return formResponse("", res, 401, "Your balance isn't enough");
 
@@ -144,12 +144,32 @@ module.exports = {
       });
 
       const data = await transferModel.postTransfer(req.body);
-      return formResponse(
+      formResponse(
         data,
         res,
         201,
         `Transfer Success from id ${sender_id} to id ${receiver_id}`
       );
+      const device_token_receiver = checkReceiver[0].device_token
+      const device_token_sender = checkSender[0].device_token
+      await admin.messaging().sendToDevice(device_token_sender, {
+        notification: {
+          title: "Transfer Success",
+          body: `Success tansfer to ${checkReceiver[0].firstName} with amount ${amount}`,
+          badge: '1',
+        },
+      })
+      // .then(()=>{
+      //   console.log(`success pass notif to receiver`)
+      //   admin.messaging().sendToDevice(device_token_receiver, {
+      //     notification: {
+      //       title: "Transfer Received",
+      //       body: `You've been transferred Rp${amount} by ${checkSender[0].firstName}`,
+      //       badge: '1',
+      //     }
+      //   })
+      //   console.log(`success pass notif to sender`)
+      // })
     } catch (err) {
       return formResponse(
         "",
