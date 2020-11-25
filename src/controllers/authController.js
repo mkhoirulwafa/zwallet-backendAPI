@@ -46,7 +46,7 @@ module.exports = {
       const login = await authModel.login(req.body);
       if (login[0]) {
         const checkDeviceToken = authModel.checkDevice(login[0].id);
-        if (checkDeviceToken[0] !== "") {
+        if (checkDeviceToken[0] === "" || checkDeviceToken[0] === undefined) {
           const newData = login[0];
           const newBody = {
             id: newData.id,
@@ -56,12 +56,11 @@ module.exports = {
           };
           const hashed = bcrypt.compareSync(password, newData.password);
           if (hashed) {
-            console.log(`password sama`);
             const token = await jwt.sign(newBody, process.env.SECRET_KEY);
             let result = { ...newBody, balance: newData.balance, token: token };
             return formResponse(result, res, 201, "Login Success");
           } else {
-            return formResponse("", res, 403, `Email or Password wrong woi`);
+            return formResponse("", res, 403, `Email or Password wrong`);
           }
         }
         return formResponse(
