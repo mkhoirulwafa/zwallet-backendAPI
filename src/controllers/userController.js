@@ -76,27 +76,6 @@ module.exports = {
         formResponse("", res, 500, "Internal Server Error, Failed to get User")
       );
   },
-  postUser: async (req, res) => {
-    const { email, password } = req.body;
-    try {
-      if (email && password) {
-        const check = await userModel.getUserByEmail(email)
-        if(check[0]) return formResponse("", res, 403, "Email already exists")
-        bcrypt.genSalt(10, function (err, salt) {
-          bcrypt.hash(password, salt, async function (err, hashedPassword) {
-            const newBody = { ...req.body, password: hashedPassword };
-            const result = await userModel.postUser(newBody)
-            if(result.affectedRows){
-              const data = await userModel.getUserByEmail(email)
-              formResponse(data, res, 201, "Register User Success")
-            }
-          });
-        });
-      }
-    } catch (err) {
-      formResponse("", res, 404, err)
-    }
-  },
   updateUser: async (req, res) => {
     const bearerToken = req.headers["token"].split(" ")[1];
     const decoded = verify(bearerToken, process.env.SECRET_KEY);
@@ -126,11 +105,9 @@ module.exports = {
       }
       //CHANGE PIN
       if (pin) {
-        // const result = await userModel.checkUser(decoded.id);
-        // if (currentPin.length != 6) formResponse("", res, 400, `PIN must be fulfilled`);
-        // if (currentPin != result[0].pin) formResponse("", res, 400, `Invalid PIN`);
-        if (pin.length != 6) formResponse("", res, 400, `New PIN must be fulfilled`);
-        
+        if (pin.length != 6)
+          formResponse("", res, 400, `New PIN must be fulfilled`);
+
         newBody.pin = pin;
         delete newBody.currentPin;
       }
@@ -138,7 +115,7 @@ module.exports = {
       if (req.body.phone) {
         newBody.phone = req.body.phone;
       }
-      if(req.body.device_token){
+      if (req.body.device_token) {
         newBody.device_token = req.body.device_token;
       }
       // UPDATE DATABASE
@@ -183,11 +160,33 @@ module.exports = {
       formResponse("", res, 400, err);
     }
   },
-  deleteUser: async (req, res) => {
-    try{
-      const result = await userModel.deleteUser(req.params)
-      if(result.affectedRows) formResponse( data, res, 200, `Success delete user with id ${req.params.id}` )
+  deleteUserDeviceToken: async (req, res) => {
+    try {
+      const result = await userModel.deleteUserDeviceToken(req.params);
+      if (result.affectedRows) console.log("success delete device token");
+      formResponse(
+        result,
+        res,
+        200,
+        `Success delete user with id ${req.params.id}`
+      );
+    } catch (err) {
+      console.log("Gagal delete device token");
+      formResponse("", res, 401, err.message);
     }
-    catch(err) {formResponse("", res, 401, "Failed to delete Users")}
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const result = await userModel.deleteUser(req.params);
+      if (result.affectedRows)
+        formResponse(
+          result,
+          res,
+          200,
+          `Success delete user with id ${req.params.id}`
+        );
+    } catch (err) {
+      formResponse("", res, 401, "Failed to delete Users");
+    }
   },
 };

@@ -5,11 +5,10 @@ const upload = require("../middlewares/multer");
 const { authorization } = require("../middlewares/authorization");
 
 router
-  .get("/",authorization, userController.getAllUsers)
+  .get("/", authorization, userController.getAllUsers)
   .get("/search", userController.getSearchUser)
   .get("/:id", authorization, userController.getUserById)
-  .post("/", authorization, userController.postUser)
   .patch("/", upload, userController.updateUser)
-  .delete("/:id",authorization, userController.deleteUser);
+  .delete("/:id", authorization, userController.deleteUser);
 
 module.exports = router;

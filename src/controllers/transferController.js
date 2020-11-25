@@ -159,7 +159,7 @@ module.exports = {
           badge: "1",
         },
       });
-      console.log(`success pass notif to receiver`)
+      // console.log(`success pass notif to receiver`)
       // .then(()=>{
       //   console.log(`success pass notif to receiver`)
       //   admin.messaging().sendToDevice(device_token_receiver, {

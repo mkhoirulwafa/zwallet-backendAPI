@@ -3,6 +3,7 @@ const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const formResponse = require("../helpers/formResponse");
 const bcrypt = require("bcrypt");
+const { checkDevice } = require("../models/authModel");
 require("dotenv").config();
 
 module.exports = {
@@ -44,24 +45,32 @@ module.exports = {
     try {
       const login = await authModel.login(req.body);
       if (login[0]) {
-        const newData = login[0];
-        const newBody = {
-          id: newData.id,
-          email: email,
-          fullName: newData.fullName,
-          role: newData.role_id,
-        };
-        const hashed = bcrypt.compareSync(password, newData.password);
-        if (hashed) {
-          console.log(`password sama`)
-          const token = await jwt.sign(newBody, process.env.SECRET_KEY);
-          let result = { ...newBody, balance: newData.balance, token: token };
-          return formResponse(result, res, 201, "Login Success");
-        } else {
-          return formResponse("", res, 403, `Email or Password wrong`);
+        const checkDeviceToken = authModel.checkDevice(login[0].id);
+        if (checkDeviceToken[0] !== "") {
+          const newData = login[0];
+          const newBody = {
+            id: newData.id,
+            email: email,
+            fullName: newData.fullName,
+            role: newData.role_id,
+          };
+          const hashed = bcrypt.compareSync(password, newData.password);
+          if (hashed) {
+            console.log(`password sama`);
+            const token = await jwt.sign(newBody, process.env.SECRET_KEY);
+            let result = { ...newBody, balance: newData.balance, token: token };
+            return formResponse(result, res, 201, "Login Success");
+          } else {
+            return formResponse("", res, 403, `Email or Password wrong woi`);
+          }
         }
+        return formResponse(
+          "",
+          res,
+          403,
+          `Your account has already logged in on another device`
+        );
       }
-      return formResponse("", res, 403, `Email or Password wrong`);
     } catch (err) {
       return formResponse("", res, 404, err.message);
     }
