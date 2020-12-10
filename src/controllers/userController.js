@@ -175,6 +175,20 @@ module.exports = {
       formResponse("", res, 401, err.message);
     }
   },
+  deletePhoneUser: async (req, res) => {
+    try {
+      const result = await userModel.deletePhoneUser(req.params);
+      if (result.affectedRows)
+        formResponse(
+          result,
+          res,
+          200,
+          `Success delete phone user with id ${req.params.id}`
+        );
+    } catch (err) {
+      formResponse("", res, 401, "Failed to delete phone Users");
+    }
+  },
   deleteUser: async (req, res) => {
     try {
       const result = await userModel.deleteUser(req.params);

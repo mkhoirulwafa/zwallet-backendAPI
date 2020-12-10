@@ -53,6 +53,10 @@ const userModels = {
   updateUser: (id, email, body) => {
     return query(`UPDATE users SET ? WHERE id=? OR email=?`, [body, id, email]);
   },
+  deletePhoneUser: (params) => {
+    const { id } = params;
+    return query(`DELETE phone FROM users WHERE id=?`, [id]);
+  },
   deleteUser: (params) => {
     const { id } = params;
     return query(`DELETE FROM users WHERE id=?`, [id]);
