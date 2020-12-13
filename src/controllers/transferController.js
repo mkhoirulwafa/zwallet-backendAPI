@@ -142,43 +142,33 @@ module.exports = {
       await updateUser(receiver_id, null, {
         balance: balanceReceiver,
       });
-
       const data = await transferModel.postTransfer(req.body);
-      formResponse(
-        data,
-        res,
-        201,
-        `Transfer Success from id ${sender_id} to id ${receiver_id}`
-      );
-      const device_token_receiver = checkReceiver[0].device_token;
-      const device_token_sender = checkSender[0].device_token;
-      await admin.messaging().sendToDevice(device_token_receiver, {
-        notification: {
-          title: "Transfer Received",
-          body: `You've been transferred Rp${amount} by ${checkSender[0].firstName}`,
-          badge: "1",
-        },
-      });
-      // console.log(`success pass notif to receiver`)
-      // .then(()=>{
-      //   console.log(`success pass notif to receiver`)
-      //   admin.messaging().sendToDevice(device_token_receiver, {
-      //     notification: {
-      //       title: "Transfer Received",
-      //       body: `You've been transferred Rp${amount} by ${checkSender[0].firstName}`,
-      //       badge: '1',
-      //     }
-      //   })
-      //   console.log(`success pass notif to sender`)
-      // })
+      const device_token_receiver = await checkReceiver[0].device_token;
+      // const device_token_sender = checkSender[0].device_token;
+      if (device_token_receiver === "") {
+        return formResponse(
+          data,
+          res,
+          201,
+          `Transfer Success from id ${sender_id} to id ${receiver_id}`
+        );
+      } else if (device_token_receiver !== "") {
+        await admin.messaging().sendToDevice(device_token_receiver, {
+          notification: {
+            title: "Transfer Received",
+            body: `You've been transferred Rp${amount} by ${checkSender[0].firstName}`,
+            badge: "1",
+          },
+        });
+        return formResponse(
+          data,
+          res,
+          201,
+          `Transfer Success from id ${sender_id} to id ${receiver_id}`
+        );
+      }
     } catch (err) {
-      return formResponse(
-        "",
-        res,
-        404,
-        // "Not Found, Failed to process the transfer"
-        err.message
-      );
+      return formResponse("", res, 404, err.message);
     }
   },
   updateTransfer: (req, res) => {

@@ -11,20 +11,16 @@ const io = require("socket.io")(server);
 io.on("connection", (socket) => {
   const itemId = socket.handshake.query.itemId;
   socket.join(itemId);
-  console.log("user connected waf", itemId);
+  console.log("user connected", itemId);
   socket.on("balance", (itemId) => {
     if (itemId) {
       checkUser(itemId).then((user) => {
-        console.log("=================");
-        console.log("isi user", user[0].balance);
-        console.log("=================");
         socket.to(itemId).emit("newBalance", user[0].balance);
       });
     }
   });
   socket.on("disconnect", () => {
-    /* … */
-    console.log("user Disconnet waf");
+    console.log("user Disconnet");
   });
 });
 
